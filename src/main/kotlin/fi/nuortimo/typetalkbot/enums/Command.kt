@@ -5,10 +5,10 @@ enum class Command {
     UNSUPPORTED;
 
     companion object {
-        private const val COMMAND_PREFIX: Char = '!'
+        const val PREFIX: Char = '!'
 
         private fun isCommand(message: String): Boolean {
-            return message.startsWith(COMMAND_PREFIX)
+            return message.startsWith(PREFIX)
         }
 
         fun getCommand(message: String): Command? {

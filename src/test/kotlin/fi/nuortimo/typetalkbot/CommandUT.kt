@@ -1,6 +1,9 @@
 package fi.nuortimo.typetalkbot
 
-import fi.nuortimo.typetalkbot.enums.Command
+import fi.nuortimo.typetalkbot.enums.Command.Companion.PREFIX
+import fi.nuortimo.typetalkbot.enums.Command.Companion.getCommand
+import fi.nuortimo.typetalkbot.enums.Command.HELLO
+import fi.nuortimo.typetalkbot.enums.Command.UNSUPPORTED
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -14,24 +17,24 @@ class CommandUT {
     @Test
     @DisplayName("Unsupported command returns unsupported")
     fun unsupportedCommandReturnsUnsupported() {
-        assertThat(Command.getCommand("!notCommand"), equalTo(Command.UNSUPPORTED))
+        assertThat(getCommand("${PREFIX}notCommand"), equalTo(UNSUPPORTED))
     }
 
     @Test
     @DisplayName("Supported command returns command")
     fun supportedCommandReturnsCommand() {
-        assertThat(Command.getCommand("!hello"), equalTo(Command.HELLO))
+        assertThat(getCommand("${PREFIX}hello"), equalTo(HELLO))
     }
 
     @Test
     @DisplayName("First word is parsed as command")
     fun firstWordIsParsedAsCommand() {
-        assertThat(Command.getCommand("!hello there"), equalTo(Command.HELLO))
+        assertThat(getCommand("${PREFIX}hello there"), equalTo(HELLO))
     }
 
     @Test
     @DisplayName("Not command returns null")
     fun notCommandReturnsNull() {
-        assertThat(Command.getCommand("?hello"), nullValue())
+        assertThat(getCommand("hello"), nullValue())
     }
 }
