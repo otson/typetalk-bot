@@ -1,6 +1,7 @@
 package fi.nuortimo.typetalkbot.controller
 
 import fi.nuortimo.typetalkbot.dto.WebhookMessageDTO
+import fi.nuortimo.typetalkbot.dto.WebhookReplyDTO
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 import org.springframework.http.ResponseEntity
@@ -18,6 +19,6 @@ class WebhookController {
     @PostMapping
     fun receiveWebhook(@RequestBody message: WebhookMessageDTO): ResponseEntity<Any> {
         logger.info("Received webhook message: $message")
-        return ResponseEntity.ok().build()
+        return ResponseEntity.ok().body(WebhookReplyDTO("Hi ${message.post.account.name}!", message.post.id))
     }
 }
