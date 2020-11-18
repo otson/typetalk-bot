@@ -12,11 +12,9 @@ enum class Command {
         }
 
         fun getCommand(message: String): Command? {
-            if(!isCommand(message)) return null
-            return when (message.split(" ")[0].drop(1).toUpperCase()) {
-                HELLO.name -> HELLO
-                else -> UNSUPPORTED
-            }
+            if (!isCommand(message)) return null
+            val cmd = message.split(" ")[0].drop(1).toUpperCase()
+            return values().firstOrNull { it.name == cmd } ?: UNSUPPORTED
         }
     }
 }
