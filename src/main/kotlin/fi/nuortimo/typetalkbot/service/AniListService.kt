@@ -23,30 +23,32 @@ class AniListService {
     }
 
     fun getUpcomingAnimeMessage(): String {
-        return getUpcomingAnime().toString()
+        val upcomingAnime = getUpcomingAnime()
+        var response = "これから放送されるアニメ："
+        for (media in upcomingAnime.data.page.media) {
+            response += "\n${media.title.native}"
+        }
+        return response
     }
 
-    private fun getUpcomingAnime(): AniListResponseDTO? {
+    private fun getUpcomingAnime(): AniListResponseDTO {
         val mediaIds = getUpcomingMediaIds()
-
         return getAnimeByMediaIds(mediaIds)
     }
 
-    private fun getAnimeByMediaIds(mediaIds: List<Int>): AniListResponseDTO? {
+    private fun getAnimeByMediaIds(mediaIds: List<Int>): AniListResponseDTO {
         val params = mapOf("id_in" to mediaIds)
-        val response = restTemplate.postForEntity(ANILIST_URL, HttpEntity(AniListRequestDTO(MEDIA_BY_IDS_QUERY, params), headers), String::class.java)
-        return null
+        return queryAniList(MEDIA_BY_IDS_QUERY, params)
     }
 
-    private fun getUpcomingMediaIds() : List<Int> {
+    private fun getUpcomingMediaIds(): List<Int> {
         val now = System.currentTimeMillis() / 1000
         val params = mapOf("airingAt_greater" to now.toString(), "airingAt_lesser" to (now + 3600 * 24).toString())
         return queryAniList(UPCOMING_MEDIA_IDS_QUERY, params).data.page.airingSchedules.stream().map { it.mediaId }.toList()
     }
 
-    private fun queryAniList(query: String, params: Map<String, String>): AniListResponseDTO {
+    private fun queryAniList(query: String, params: Map<*, *>): AniListResponseDTO {
         val response = restTemplate.postForEntity(ANILIST_URL, HttpEntity(AniListRequestDTO(query, params), headers), AniListResponseDTO::class.java)
-        println(response.statusCode)
         return response.body ?: AniListResponseDTO()
     }
 
@@ -61,19 +63,19 @@ class AniListService {
                         "    }" +
                         "}"
         var MEDIA_BY_IDS_QUERY: String =
-            	"query (\$id_in : [Int]) {"+
-            	"	Page (page: 1, perPage: 100) {"+
-            	"		pageInfo {"+
-            	"			total"+
-            	"		}"+
-            	"		media (id_in: \$id_in) {"+
-            	"			id"+
-            	"			title {"+
-            	"				english"+
-            	"				native"+
-            	"			}"+
-            	"		}"+
-            	"	}"+
-            	"}"
+                "query (\$id_in : [Int]) {" +
+                        "	Page (page: 1, perPage: 10) {" +
+                        "		pageInfo {" +
+                        "			total" +
+                        "		}" +
+                        "		media (id_in: \$id_in) {" +
+                        "			id" +
+                        "			title {" +
+                        "				english" +
+                        "				native" +
+                        "			}" +
+                        "		}" +
+                        "	}" +
+                        "}"
     }
 }
