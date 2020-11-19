@@ -10,7 +10,7 @@ class AnimeScheduleService {
     @Autowired
     private lateinit var aniListService: AniListService
 
-    fun getUpcomingAnime(): String? {
-        return aniListService.getUpcomingAnime()
+    fun getUpcomingAnime(): String {
+        return aniListService.getUpcomingAnimeMessage()
     }
 }

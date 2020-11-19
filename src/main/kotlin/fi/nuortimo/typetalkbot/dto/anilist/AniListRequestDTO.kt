@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot.dto.anilist
 
-data class AniListRequestDTO (
-        val query : String? = null,
-        val variables : Map<String, String> = emptyMap()
+data class AniListRequestDTO(
+        val query: String? = null,
+        val variables: Map<String, String> = emptyMap()
 )

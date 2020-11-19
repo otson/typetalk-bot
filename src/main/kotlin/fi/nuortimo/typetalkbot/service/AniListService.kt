@@ -1,6 +1,7 @@
 package fi.nuortimo.typetalkbot.service
 
 import fi.nuortimo.typetalkbot.dto.anilist.AniListRequestDTO
+import fi.nuortimo.typetalkbot.dto.anilist.AniListResponseDTO
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -20,16 +21,20 @@ class AniListService {
         headers.accept = listOf(MediaType.APPLICATION_JSON)
     }
 
-    fun getUpcomingAnime(): String? {
+    fun getUpcomingAnimeMessage(): String {
+        return getUpcomingAnime().toString()
+    }
+
+    private fun getUpcomingAnime(): AniListResponseDTO? {
         val now = System.currentTimeMillis() / 1000
         val params = mapOf("airingAt_greater" to now.toString(), "airingAt_lesser" to (now + 3600 * 24).toString())
         return queryAniList(UPCOMING_MEDIA_IDS_QUERY, params)
     }
 
-    private fun queryAniList(query: String, params: Map<String, String>): String? {
-        val response = restTemplate.postForEntity(ANILIST_URL, HttpEntity(AniListRequestDTO(query, params), headers), String::class.java)
+    private fun queryAniList(query: String, params: Map<String, String>): AniListResponseDTO {
+        val response = restTemplate.postForEntity(ANILIST_URL, HttpEntity(AniListRequestDTO(query, params), headers), AniListResponseDTO::class.java)
         println(response.statusCode)
-        return response.body
+        return response.body ?: AniListResponseDTO()
     }
 
     companion object {
