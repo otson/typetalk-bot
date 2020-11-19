@@ -2,6 +2,7 @@ package fi.nuortimo.typetalkbot.service
 
 import fi.nuortimo.typetalkbot.dto.anilist.AniListRequestDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListResponseDTO
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -13,7 +14,8 @@ import kotlin.streams.toList
 @Service
 class AniListService {
 
-    private val restTemplate = RestTemplate()
+    @Autowired
+    private lateinit var restTemplate: RestTemplate
     private val headers = HttpHeaders()
 
     @PostConstruct
