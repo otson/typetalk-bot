@@ -24,25 +24,11 @@ class AniListService {
 
     fun getUpcomingAnimeMessage(): String {
         val upcomingAnime = getUpcomingAnime()
-        println(upcomingAnime)
         var response = "これから放送されるアニメ："
-        for (media in upcomingAnime.data.page.media) {
-            response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}\t第${media.nextAiringEpisode.episode}話\t${media.title.native}"
+        val medias = upcomingAnime.data.page.media.sortedBy { it.nextAiringEpisode.timeUntilAiring }.take(10)
+        for (media in medias) {
+            response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}  \t${media.title.native}  \t第${media.nextAiringEpisode.episode}話"
         }
-        return response
-    }
-
-    private fun convertSecondsToRelative(seconds: Int): String {
-        var s = seconds
-        val hours = s / 3600
-        s %= 3600
-        val minutes: Int = s / 60
-        s %= 60
-        var response = ""
-        if (hours != 0) response += "${hours}時間"
-        if (minutes != 0) response += "${minutes}分"
-        if (seconds != 0) response += "${s}秒"
-        response += "後"
         return response
     }
 
@@ -52,7 +38,7 @@ class AniListService {
     }
 
     private fun getAnimeByMediaIds(mediaIds: List<Int>): AniListResponseDTO {
-        val params = mapOf("id_in" to mediaIds)
+        val params = mapOf("id_in" to mediaIds, "isAdult" to false, "type" to "ANIME", "countryOfOrigin" to "JP", "tag_not_in" to "Kids")
         return queryAniList(MEDIA_BY_IDS_QUERY, params)
     }
 
@@ -67,6 +53,20 @@ class AniListService {
         return response.body ?: AniListResponseDTO()
     }
 
+    private fun convertSecondsToRelative(seconds: Int): String {
+        var s = seconds
+        val hours = s / 3600
+        s %= 3600
+        val minutes: Int = s / 60
+        s %= 60
+        var response = ""
+        if (hours != 0) response += "${hours}時間"
+        if (minutes != 0) response += "${minutes}分"
+        if (seconds != 0 && response == "") response += "${s}秒"
+        response += "後"
+        return response
+    }
+
     companion object {
         const val ANILIST_URL = "https://graphql.anilist.co"
         var UPCOMING_MEDIA_IDS_QUERY: String =
@@ -78,12 +78,14 @@ class AniListService {
                         "    }" +
                         "}"
         var MEDIA_BY_IDS_QUERY: String =
-                "query (\$id_in : [Int]) {" +
-                        "	Page (page: 1, perPage: 10) {" +
+                "query (\$countryOfOrigin: CountryCode, \$id_in: [Int], \$type: MediaType," +
+                        "\$isAdult: Boolean, \$tag_not_in: [String]) {" +
+                        "	Page (page: 1, perPage: 100) {" +
                         "		pageInfo {" +
                         "			total" +
                         "		}" +
-                        "		media (id_in: \$id_in) {" +
+                        "			media (countryOfOrigin: \$countryOfOrigin, id_in: \$id_in, type: \$type," +
+                        "              isAdult: \$isAdult, tag_not_in: \$tag_not_in) {" +
                         "			id" +
                         "			title {" +
                         "				english" +
