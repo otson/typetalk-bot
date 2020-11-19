@@ -2,6 +2,7 @@ package fi.nuortimo.typetalkbot.enums
 
 enum class Command {
     HELLO,
+    TODAY,
     UNSUPPORTED;
 
     companion object {
