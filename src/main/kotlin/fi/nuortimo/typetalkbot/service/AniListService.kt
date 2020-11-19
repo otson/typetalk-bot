@@ -24,10 +24,25 @@ class AniListService {
 
     fun getUpcomingAnimeMessage(): String {
         val upcomingAnime = getUpcomingAnime()
+        println(upcomingAnime)
         var response = "これから放送されるアニメ："
         for (media in upcomingAnime.data.page.media) {
-            response += "\n${media.title.native}"
+            response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}\t第${media.nextAiringEpisode.episode}話\t${media.title.native}"
         }
+        return response
+    }
+
+    private fun convertSecondsToRelative(seconds: Int): String {
+        var s = seconds
+        val hours = s / 3600
+        s %= 3600
+        val minutes: Int = s / 60
+        s %= 60
+        var response = ""
+        if (hours != 0) response += "${hours}時間"
+        if (minutes != 0) response += "${minutes}分"
+        if (seconds != 0) response += "${s}秒"
+        response += "後"
         return response
     }
 
@@ -74,6 +89,10 @@ class AniListService {
                         "				english" +
                         "				native" +
                         "			}" +
+                        "           nextAiringEpisode {" +
+                        "               timeUntilAiring" +
+                        "               episode" +
+                        "           }" +
                         "		}" +
                         "	}" +
                         "}"

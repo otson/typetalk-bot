@@ -21,7 +21,13 @@ data class AiringSchedulesItem(
 )
 
 data class MediaItem(
-        val title: Title = Title()
+        val title: Title = Title(),
+        val nextAiringEpisode : NextAiringEpisode = NextAiringEpisode()
+)
+
+data class NextAiringEpisode (
+        val timeUntilAiring : Int = -1,
+        val episode : Int = -1
 )
 
 data class Title(
