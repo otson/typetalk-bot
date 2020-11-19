@@ -8,6 +8,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestTemplate
 import javax.annotation.PostConstruct
+import kotlin.streams.toList
 
 @Service
 class AniListService {
@@ -26,9 +27,21 @@ class AniListService {
     }
 
     private fun getUpcomingAnime(): AniListResponseDTO? {
+        val mediaIds = getUpcomingMediaIds()
+
+        return getAnimeByMediaIds(mediaIds)
+    }
+
+    private fun getAnimeByMediaIds(mediaIds: List<Int>): AniListResponseDTO? {
+        val params = mapOf("id_in" to mediaIds)
+        val response = restTemplate.postForEntity(ANILIST_URL, HttpEntity(AniListRequestDTO(MEDIA_BY_IDS_QUERY, params), headers), String::class.java)
+        return null
+    }
+
+    private fun getUpcomingMediaIds() : List<Int> {
         val now = System.currentTimeMillis() / 1000
         val params = mapOf("airingAt_greater" to now.toString(), "airingAt_lesser" to (now + 3600 * 24).toString())
-        return queryAniList(UPCOMING_MEDIA_IDS_QUERY, params)
+        return queryAniList(UPCOMING_MEDIA_IDS_QUERY, params).data.page.airingSchedules.stream().map { it.mediaId }.toList()
     }
 
     private fun queryAniList(query: String, params: Map<String, String>): AniListResponseDTO {
@@ -47,5 +60,20 @@ class AniListService {
                         "        }" +
                         "    }" +
                         "}"
+        var MEDIA_BY_IDS_QUERY: String =
+            	"query (\$id_in : [Int]) {"+
+            	"	Page (page: 1, perPage: 100) {"+
+            	"		pageInfo {"+
+            	"			total"+
+            	"		}"+
+            	"		media (id_in: \$id_in) {"+
+            	"			id"+
+            	"			title {"+
+            	"				english"+
+            	"				native"+
+            	"			}"+
+            	"		}"+
+            	"	}"+
+            	"}"
     }
 }
