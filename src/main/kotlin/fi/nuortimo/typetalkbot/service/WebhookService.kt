@@ -10,19 +10,24 @@ import org.springframework.stereotype.Service
 class WebhookService {
 
     @Autowired
-    private lateinit var animeScheduleService: AnimeScheduleService
+    private lateinit var aniListService: AniListService
+
 
     fun processIncomingWebhookMessage(message: WebhookMessageDTO): WebhookReplyDTO? {
         return when (Command.getCommand(message.post.message)) {
             Command.HELLO -> getHelloReply(message)
             Command.TODAY -> getTodayReply(message)
+            Command.SUB -> getSubReply(message)
             Command.UNSUPPORTED -> getUnsupportedReply(message)
             else -> null
         }
     }
 
+    private fun getSubReply(message: WebhookMessageDTO) =
+            WebhookReplyDTO(aniListService.addSubscription(message), message.post.id)
+
     private fun getTodayReply(message: WebhookMessageDTO) =
-            WebhookReplyDTO(animeScheduleService.getUpcomingAnime(), message.post.id)
+            WebhookReplyDTO(aniListService.getUpcomingAnimeMessage(), message.post.id)
 
     private fun getUnsupportedReply(message: WebhookMessageDTO) =
             WebhookReplyDTO("Unsupported command.", message.post.id)

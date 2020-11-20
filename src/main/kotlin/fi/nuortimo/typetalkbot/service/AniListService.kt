@@ -1,5 +1,6 @@
 package fi.nuortimo.typetalkbot.service
 
+import fi.nuortimo.typetalkbot.dto.WebhookMessageDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListRequestDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +19,9 @@ class AniListService {
     private lateinit var restTemplate: RestTemplate
     private val headers = HttpHeaders()
 
+    @Autowired
+    private lateinit var mediaSubscriptionService: MediaSubscriptionService
+
     @PostConstruct
     fun init() {
         headers.contentType = MediaType.APPLICATION_JSON
@@ -32,6 +36,17 @@ class AniListService {
             response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}  \t${media.title.native}  \t第${media.nextAiringEpisode.episode}話"
         }
         return response
+    }
+
+    fun addSubscription(message: WebhookMessageDTO): String {
+        return try {
+            val mediaId = message.post.message.drop(5).split(" ").first().toInt()
+            val userId = message.post.account.id
+            mediaSubscriptionService.addSubscription(mediaId, userId)
+            "Subcribed!"
+        } catch (e: Exception) {
+            "Invalid subscription value, should be numerical id of the media."
+        }
     }
 
     private fun getUpcomingAnime(): AniListResponseDTO {

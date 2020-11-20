@@ -1,4 +1,6 @@
 package fi.nuortimo.typetalkbot.repository
 
-interface MediaSubscriptionRepository {
-}
+import fi.nuortimo.typetalkbot.MediaSubscription
+import org.springframework.data.jpa.repository.JpaRepository
+
+interface MediaSubscriptionRepository : JpaRepository<MediaSubscription, Int>

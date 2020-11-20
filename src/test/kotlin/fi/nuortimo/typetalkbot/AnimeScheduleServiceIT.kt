@@ -3,7 +3,6 @@ package fi.nuortimo.typetalkbot
 import com.fasterxml.jackson.databind.ObjectMapper
 import fi.nuortimo.typetalkbot.dto.anilist.*
 import fi.nuortimo.typetalkbot.service.AniListService
-import fi.nuortimo.typetalkbot.service.AnimeScheduleService
 import org.hamcrest.CoreMatchers.containsString
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.BeforeEach
