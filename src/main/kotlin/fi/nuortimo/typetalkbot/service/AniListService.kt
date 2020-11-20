@@ -45,14 +45,15 @@ class AniListService {
             println("User ${sub.userId}, ${idNameMap[sub.mediaId]} airs soon!")
         }
     }
-
+    
     fun getUpcomingAnimeMessage(): String {
         val upcomingAnime = getUpcomingAnime()
         var response = "Anime airing in the next 24 hours："
         val medias = upcomingAnime.data.page.media.sortedBy { it.nextAiringEpisode?.timeUntilAiring }.take(20)
         for (media in medias) {
             if (media.nextAiringEpisode != null) {
-                response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}: \tEpisode ${media.nextAiringEpisode.episode} of ${media.title.native} "
+                response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}: \tEpisode ${media.nextAiringEpisode.episode} of " +
+                        "[${media.title.native}](${ANILIST_URL}${media.id}) "
                 if (media.title.english != null) response += "(${media.title.english}) "
                 response += "(sub id: ${media.id})"
             }
@@ -89,7 +90,7 @@ class AniListService {
     }
 
     private fun queryAniList(query: String, params: Map<*, *>): AniListResponseDTO {
-        val response = restTemplate.postForEntity(ANILIST_URL, HttpEntity(AniListRequestDTO(query, params), headers), AniListResponseDTO::class.java)
+        val response = restTemplate.postForEntity(ANILIST_API_URL, HttpEntity(AniListRequestDTO(query, params), headers), AniListResponseDTO::class.java)
         return response.body ?: AniListResponseDTO()
     }
 
@@ -107,7 +108,8 @@ class AniListService {
     }
 
     companion object {
-        const val ANILIST_URL = "https://graphql.anilist.co"
+        const val ANILIST_URL = "https://anilist.co/anime/"
+        const val ANILIST_API_URL = "https://graphql.anilist.co"
         var UPCOMING_MEDIA_IDS_QUERY: String =
                 "query (\$airingAt_lesser: Int, \$airingAt_greater: Int) {" +
                         "    Page (page: 1, perPage: 100) {" +

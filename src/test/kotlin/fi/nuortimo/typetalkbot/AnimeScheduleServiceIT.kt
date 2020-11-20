@@ -47,7 +47,7 @@ class AnimeScheduleServiceIT {
         val expectedTimeUntil = "1時間1分"
         val expectedEpisodeNumber = "第1話"
         mockServer.expect(ExpectedCount.once(),
-                requestTo(URI(AniListService.ANILIST_URL)))
+                requestTo(URI(AniListService.ANILIST_API_URL)))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -55,7 +55,7 @@ class AnimeScheduleServiceIT {
                                 AiringSchedulesItem(1))))))))
                 )
         mockServer.expect(ExpectedCount.once(),
-                requestTo(URI(AniListService.ANILIST_URL)))
+                requestTo(URI(AniListService.ANILIST_API_URL)))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
