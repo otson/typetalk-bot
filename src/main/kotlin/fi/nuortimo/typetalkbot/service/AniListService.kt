@@ -33,10 +33,10 @@ class AniListService {
         headers.accept = listOf(MediaType.APPLICATION_JSON)
     }
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedRate = 1000 * 60)
     fun processSubscriptions() {
         val subs = mediaSubscriptionRepository.findAll()
-        val mediaIdsToNotify = getUpcomingMediaIds(1)
+        val mediaIdsToNotify = getUpcomingMediaIds(1, 2)
         val subsMediaIdsToNotify = subs.map { it.mediaId }.toSet().filter { mediaIdsToNotify.contains(it) }.toSet()
         val idNameMap = getAnimeByMediaIds(subsMediaIdsToNotify).data.page.media.map { it.id to it.title.english }.toMap()
         val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(subsMediaIdsToNotify)
@@ -45,7 +45,7 @@ class AniListService {
             println("User ${sub.userId}, ${idNameMap[sub.mediaId]} airs soon!")
         }
     }
-    
+
     fun getUpcomingAnimeMessage(): String {
         val upcomingAnime = getUpcomingAnime()
         var response = "Anime airing in the next 24 hours："
@@ -74,7 +74,7 @@ class AniListService {
     }
 
     private fun getUpcomingAnime(): AniListResponseDTO {
-        val mediaIds = getUpcomingMediaIds(24)
+        val mediaIds = getUpcomingMediaIds(0, 24 * 60)
         return getAnimeByMediaIds(mediaIds)
     }
 
@@ -83,9 +83,9 @@ class AniListService {
         return queryAniList(MEDIA_BY_IDS_QUERY, params)
     }
 
-    private fun getUpcomingMediaIds(maxHoursUntilAiring: Int): Set<Int> {
+    private fun getUpcomingMediaIds(minMinutesUntilAiring: Int, maxMinutesUntilAiring: Int): Set<Int> {
         val now = System.currentTimeMillis() / 1000
-        val params = mapOf("airingAt_greater" to now.toString(), "airingAt_lesser" to (now + 3600 * maxHoursUntilAiring).toString())
+        val params = mapOf("airingAt_greater" to (now + 60 * minMinutesUntilAiring).toString(), "airingAt_lesser" to (now + 60 * maxMinutesUntilAiring).toString())
         return queryAniList(UPCOMING_MEDIA_IDS_QUERY, params).data.page.airingSchedules.stream().map { it.mediaId }.toList().toSet()
     }
 
