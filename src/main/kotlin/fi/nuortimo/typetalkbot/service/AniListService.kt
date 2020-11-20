@@ -37,7 +37,7 @@ class AniListService {
     fun processSubscriptions() {
         val subs = mediaSubscriptionRepository.findAll()
         val mediaIdsToNotify = getUpcomingMediaIds(1)
-        val subsMediaIdsToNotify =  subs.map { it.mediaId }.toSet().filter { mediaIdsToNotify.contains(it) }.toSet()
+        val subsMediaIdsToNotify = subs.map { it.mediaId }.toSet().filter { mediaIdsToNotify.contains(it) }.toSet()
         val idNameMap = getAnimeByMediaIds(subsMediaIdsToNotify).data.page.media.map { it.id to it.title.english }.toMap()
         val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(subsMediaIdsToNotify)
         // TODO: Send messages to TypeTalk
@@ -48,11 +48,14 @@ class AniListService {
 
     fun getUpcomingAnimeMessage(): String {
         val upcomingAnime = getUpcomingAnime()
-        var response = "これから放送されるアニメ："
-        val medias = upcomingAnime.data.page.media.sortedBy { it.nextAiringEpisode?.timeUntilAiring }.take(10)
+        var response = "Anime airing in the next 24 hours："
+        val medias = upcomingAnime.data.page.media.sortedBy { it.nextAiringEpisode?.timeUntilAiring }.take(20)
         for (media in medias) {
-            if (media.nextAiringEpisode != null)
-                response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}  \t${media.title.native} id: ${media.id}  \t第${media.nextAiringEpisode.episode}話"
+            if (media.nextAiringEpisode != null) {
+                response += "\n${convertSecondsToRelative(media.nextAiringEpisode.timeUntilAiring)}: \tEpisode ${media.nextAiringEpisode.episode} of ${media.title.native} "
+                if (media.title.english != null) response += "(${media.title.english}) "
+                response += "(sub id: ${media.id})"
+            }
         }
         return response
     }
@@ -79,7 +82,7 @@ class AniListService {
         return queryAniList(MEDIA_BY_IDS_QUERY, params)
     }
 
-    private fun getUpcomingMediaIds(maxHoursUntilAiring : Int): Set<Int> {
+    private fun getUpcomingMediaIds(maxHoursUntilAiring: Int): Set<Int> {
         val now = System.currentTimeMillis() / 1000
         val params = mapOf("airingAt_greater" to now.toString(), "airingAt_lesser" to (now + 3600 * maxHoursUntilAiring).toString())
         return queryAniList(UPCOMING_MEDIA_IDS_QUERY, params).data.page.airingSchedules.stream().map { it.mediaId }.toList().toSet()
@@ -96,12 +99,11 @@ class AniListService {
         s %= 3600
         val minutes: Int = s / 60
         s %= 60
-        var response = ""
-        if (hours != 0) response += "${hours}時間"
-        if (minutes != 0) response += "${minutes}分"
-        if (seconds != 0 && response == "") response += "${s}秒"
-        response += "後"
-        return response
+        var response = "In "
+        if (hours != 0) response += "${hours}h "
+        if (minutes != 0) response += "${minutes}m "
+        if (seconds != 0 && response == "In ") response += "${s}s"
+        return response.trimEnd()
     }
 
     companion object {
