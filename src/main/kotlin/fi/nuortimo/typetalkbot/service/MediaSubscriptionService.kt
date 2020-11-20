@@ -13,11 +13,10 @@ class MediaSubscriptionService {
     private lateinit var mediaSubscriptionRepository: MediaSubscriptionRepository
 
     @Transactional
-    fun addSubscription(userId: Int, mediaId: Int): Boolean {
-        return if (!mediaSubscriptionRepository.existsByUserIdEqualsAndMediaIdEquals(userId, mediaId)) {
-            val sub = MediaSubscription(userId = userId, mediaId = mediaId)
+    fun addSubscription(username: String, mediaId: Int, topicId: Int): Boolean {
+        return if (!mediaSubscriptionRepository.existsByUsernameEqualsAndMediaIdEquals(username, mediaId)) {
+            val sub = MediaSubscription(username = username, mediaId = mediaId, topicId = topicId)
             mediaSubscriptionRepository.save(sub)
-            println("Current sub count: " + mediaSubscriptionRepository.count())
             true
         } else false
     }

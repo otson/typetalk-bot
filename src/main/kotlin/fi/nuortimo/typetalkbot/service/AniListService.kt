@@ -27,6 +27,9 @@ class AniListService {
     @Autowired
     private lateinit var mediaSubscriptionRepository: MediaSubscriptionRepository
 
+    @Autowired
+    private lateinit var typeTalkService: TypetalkService
+
     @PostConstruct
     fun init() {
         headers.contentType = MediaType.APPLICATION_JSON
@@ -38,11 +41,14 @@ class AniListService {
         val subs = mediaSubscriptionRepository.findAll()
         val mediaIdsToNotify = getUpcomingMediaIds(1, 2)
         val subsMediaIdsToNotify = subs.map { it.mediaId }.toSet().filter { mediaIdsToNotify.contains(it) }.toSet()
-        val idNameMap = getAnimeByMediaIds(subsMediaIdsToNotify).data.page.media.map { it.id to it.title.english }.toMap()
+        val idNameMap = getAnimeByMediaIds(subsMediaIdsToNotify).data.page.media
+                .map {
+                    it.id to (it.title.english ?: it.title.native)
+                }.toMap()
         val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(subsMediaIdsToNotify)
-        // TODO: Send messages to TypeTalk
         for (sub in subsToNotify) {
-            println("User ${sub.userId}, ${idNameMap[sub.mediaId]} airs soon!")
+            val msg = "${sub.username}, ${idNameMap[sub.mediaId]} airs soon!"
+            typeTalkService.sendMessage(sub.topicId, msg)
         }
     }
 
@@ -63,9 +69,10 @@ class AniListService {
 
     fun addSubscription(message: WebhookMessageDTO): String {
         return try {
-            val userId = message.post.account.id
+            val username = message.post.account.name
             val mediaId = message.post.message.drop(5).toInt()
-            return if (mediaSubscriptionService.addSubscription(userId, mediaId)) {
+            val topicId = message.post.topicId
+            return if (mediaSubscriptionService.addSubscription(username, mediaId, topicId)) {
                 "Subscribed!"
             } else "Subscription already exists!"
         } catch (e: Exception) {

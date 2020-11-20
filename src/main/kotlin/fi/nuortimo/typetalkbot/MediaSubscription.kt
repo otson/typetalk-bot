@@ -8,8 +8,9 @@ import javax.persistence.Id
 @Entity
 data class MediaSubscription(
         @Id
-        @GeneratedValue(strategy= GenerationType.IDENTITY)
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int? = null,
-        val userId: Int,
-        val mediaId: Int
+        val username: String,
+        val mediaId: Int,
+        val topicId: Int
 )
