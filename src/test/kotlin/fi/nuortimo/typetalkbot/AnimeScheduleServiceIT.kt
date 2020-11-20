@@ -27,7 +27,7 @@ import java.net.URI
 class AnimeScheduleServiceIT {
 
     @Autowired
-    private lateinit var animeScheduleService: AnimeScheduleService
+    private lateinit var aniListService: AniListService
 
     @Autowired
     private lateinit var restTemplate: RestTemplate
@@ -43,9 +43,9 @@ class AnimeScheduleServiceIT {
     @Test
     @DisplayName("Today command returns upcoming media")
     fun todayCommandReturnsUpcomingMedia() {
-        val expectedTitle = "タイトル"
-        val expectedTimeUntil = "1時間1分"
-        val expectedEpisodeNumber = "第1話"
+        val expectedTitle = "title"
+        val expectedTimeUntil = "1h 1m"
+        val expectedEpisodeNumber = "Episode 1 "
         mockServer.expect(ExpectedCount.once(),
                 requestTo(URI(AniListService.ANILIST_API_URL)))
                 .andExpect(method(HttpMethod.POST))
@@ -60,11 +60,11 @@ class AnimeScheduleServiceIT {
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(mapper.writeValueAsString(AniListResponseDTO(Data(Page(media = listOf(
-                                MediaItem(Title("title", expectedTitle),
+                                MediaItem(1, Title("title", "タイトル"),
                                         NextAiringEpisode(3665, 1))))))))
                 )
 
-        val upcomingAnime = animeScheduleService.getUpcomingAnime()
+        val upcomingAnime = aniListService.getUpcomingAnimeMessage()
 
         assertThat(upcomingAnime, containsString(expectedTimeUntil))
         assertThat(upcomingAnime, containsString(expectedEpisodeNumber))
