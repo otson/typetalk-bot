@@ -40,10 +40,11 @@ class AniListService {
 
     fun addSubscription(message: WebhookMessageDTO): String {
         return try {
-            val mediaId = message.post.message.drop(5).split(" ").first().toInt()
+            val mediaId = message.post.message.drop(5).toInt()
             val userId = message.post.account.id
-            mediaSubscriptionService.addSubscription(mediaId, userId)
-            "Subcribed!"
+            return if (mediaSubscriptionService.addSubscription(mediaId, userId)) {
+                "Subscribed!"
+            } else "Subscription already exists!"
         } catch (e: Exception) {
             "Invalid subscription value, should be numerical id of the media."
         }
