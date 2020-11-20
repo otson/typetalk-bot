@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot.dto
+package fi.nuortimo.typetalkbot.dto.typetalk
 
 data class AccountDTO(
         var id: Int = 0,

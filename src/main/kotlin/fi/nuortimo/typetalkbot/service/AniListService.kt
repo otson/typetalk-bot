@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot.service
 
-import fi.nuortimo.typetalkbot.dto.WebhookMessageDTO
+import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListRequestDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListResponseDTO
 import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
@@ -67,7 +67,7 @@ class AniListService {
         return response
     }
 
-    fun addSubscription(message: WebhookMessageDTO): String {
+    fun addSubscription(message: TypetalkMessageDTO): String {
         return try {
             val username = message.post.account.name
             val mediaId = message.post.message.drop(5).toInt()
