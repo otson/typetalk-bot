@@ -12,7 +12,6 @@ class WebhookService {
     @Autowired
     private lateinit var aniListService: AniListService
 
-
     fun processIncomingWebhookMessage(message: WebhookMessageDTO): WebhookReplyDTO? {
         return when (Command.getCommand(message.post.message)) {
             Command.HELLO -> getHelloReply(message)

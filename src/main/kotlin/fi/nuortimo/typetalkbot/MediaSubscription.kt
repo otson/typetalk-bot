@@ -10,6 +10,6 @@ data class MediaSubscription(
         @Id
         @GeneratedValue(strategy= GenerationType.IDENTITY)
         val id: Int? = null,
-        val userId: Int? = null,
-        val mediaId: Int? = null
+        val userId: Int,
+        val mediaId: Int
 )
