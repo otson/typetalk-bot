@@ -1,8 +1,8 @@
 package fi.nuortimo.typetalkbot.service
 
-import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListRequestDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListResponseDTO
+import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
@@ -78,6 +78,24 @@ class AniListService {
         } catch (e: Exception) {
             "Invalid subscription value, should be numerical id of the media."
         }
+    }
+
+    fun removeSubscription(message: TypetalkMessageDTO): String {
+        return try {
+            val username = message.post.account.name
+            val mediaId = message.post.message.drop(7).toInt()
+            return if (mediaSubscriptionService.removeSubscription(username, mediaId)) {
+                "Subscription removed!"
+            } else "Subscription does not exist!"
+        } catch (e: Exception) {
+            "Invalid subscription value, should be numerical id of the media."
+        }
+    }
+
+    fun listSubscriptions(message: TypetalkMessageDTO): String {
+        val subs = mediaSubscriptionService.findSubscriptions(message.post.account.name)
+        return if (subs.isEmpty()) "You have no subscriptions."
+        else "You are currently subscribed to anime with the following ids: ${subs.map { it.mediaId }.joinToString()}"
     }
 
     private fun getUpcomingAnime(): AniListResponseDTO {

@@ -17,6 +17,8 @@ class WebhookService {
             Command.HELLO -> getHelloReply(message)
             Command.TODAY -> getTodayReply(message)
             Command.SUB -> getSubReply(message)
+            Command.UNSUB -> getUnsubReply(message)
+            Command.LISTSUBS -> getListSubsReply(message)
             Command.UNSUPPORTED -> getUnsupportedReply(message)
             else -> null
         }
@@ -24,6 +26,12 @@ class WebhookService {
 
     private fun getSubReply(message: TypetalkMessageDTO) =
             TypetalkResponseDTO(aniListService.addSubscription(message), message.post.id)
+
+    private fun getUnsubReply(message: TypetalkMessageDTO) =
+            TypetalkResponseDTO(aniListService.removeSubscription(message), message.post.id)
+
+    private fun getListSubsReply(message: TypetalkMessageDTO) =
+            TypetalkResponseDTO(aniListService.listSubscriptions(message), message.post.id)
 
     private fun getTodayReply(message: TypetalkMessageDTO) =
             TypetalkResponseDTO(aniListService.getUpcomingAnimeMessage(), message.post.id)

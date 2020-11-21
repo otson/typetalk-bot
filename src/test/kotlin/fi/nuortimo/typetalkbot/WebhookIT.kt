@@ -4,6 +4,7 @@ import fi.nuortimo.typetalkbot.dto.typetalk.AccountDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.PostDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
+import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
 import fi.nuortimo.typetalkbot.service.AniListService
 import fi.nuortimo.typetalkbot.service.WebhookService
 import org.hamcrest.CoreMatchers.*
@@ -11,9 +12,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.mockito.Spy
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -36,8 +37,12 @@ class WebhookIT : IT {
     @InjectMocks
     private lateinit var webhookService: WebhookService
 
-    @Mock
+    @Spy
+    @Autowired
     private lateinit var aniListService: AniListService
+
+    @Autowired
+    private lateinit var mediaSubscriptionRepository: MediaSubscriptionRepository
 
     @Test
     @DisplayName("Hello commands returns hello")
@@ -90,13 +95,38 @@ class WebhookIT : IT {
     @Test
     @DisplayName("Sub command responds with subscribed")
     fun subCommandRespondsWithSubscribed() {
-        val expectedMessage = "Subscribed message"
+        val expectedMessage = "Subscribed!"
         val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!sub 123"))
-        MockitoAnnotations.openMocks(this)
-        `when`(aniListService.addSubscription(typetalkMessage)).thenReturn(expectedMessage)
         val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
                 HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         assertThat(response.body?.message, equalTo(expectedMessage))
+    }
+
+    @Test
+    @DisplayName("Unsub command responds with unsubscribed")
+    fun unsubCommandRespondsWithUnsubscribed() {
+        val username = "user"
+        val mediaId = 1
+        val expectedMessage = "Subscription removed!"
+        mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId, topicId = 0))
+        val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!unsub $mediaId", account = AccountDTO(name = username)))
+        val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
+                HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
+        assertThat(response.statusCode, equalTo(HttpStatus.OK))
+        assertThat(response.body?.message, equalTo(expectedMessage))
+    }
+
+    @Test
+    @DisplayName("Listsubs command responds with subscriptions")
+    fun listSubsCommandRespondsWithSubscriptions() {
+        val username = "user"
+        val mediaId = 321
+        mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId, topicId = 0))
+        val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!listsubs", account = AccountDTO(name = username)))
+        val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
+                HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
+        assertThat(response.statusCode, equalTo(HttpStatus.OK))
+        assertThat(response.body?.message, containsString(mediaId.toString()))
     }
 }

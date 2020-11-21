@@ -2,6 +2,7 @@ package fi.nuortimo.typetalkbot
 
 import fi.nuortimo.typetalkbot.service.TypetalkService
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -13,6 +14,7 @@ import org.springframework.web.client.RestTemplate
 import java.net.URI
 
 @SpringBootTest
+@DisplayName("Typetalk")
 class TypeTalkIT : IT {
 
     @Autowired
@@ -29,6 +31,7 @@ class TypeTalkIT : IT {
     }
 
     @Test
+    @DisplayName("Sends comment")
     fun sendsComment() {
         val expectedTopicId = 1
         val expectedMessage = "Hi"
@@ -41,6 +44,7 @@ class TypeTalkIT : IT {
     }
 
     @Test
+    @DisplayName("Does not send comment without API token")
     fun doesNotSendCommentWithoutApiToken() {
         val expectedTopicId = 1
         typetalkService.typetalkToken = null
