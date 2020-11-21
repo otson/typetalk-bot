@@ -18,6 +18,9 @@ class TypetalkService {
     @Value("\${TYPETALK_TOKEN:#{null}}")
     var typetalkToken: String? = null
 
+    @Value("\${TYPETALK_API_URL:#{null}}")
+    var typetalkApiUrl: String? = null
+
     @Autowired
     private lateinit var restTemplate: RestTemplate
     private val httpHeaders = HttpHeaders()
@@ -27,20 +30,23 @@ class TypetalkService {
         httpHeaders.set(TYPETALK_TOKEN_HEADER, typetalkToken)
     }
 
-    fun sendMessage(topicId: Int, message: String) {
-        if (typetalkToken == null) {
-            logger.info("TYPETALK_TOKEN has not been set, cannot send message to TypeTalk.")
-        }
-        else try {
-            restTemplate.postForEntity("$API_URL/v1/topics/$topicId", HttpEntity(mapOf("message" to message), httpHeaders), Void::class.java)
-        } catch (e: Exception) {
-            logger.info("Failed to send message to Typetalk. Error message: {}", e.message)
+    fun sendMessage(message: String) {
+        when {
+            typetalkToken == null -> {
+                logger.info("TYPETALK_TOKEN environment property has not been set, cannot send message to TypeTalk.")
+            }
+            typetalkApiUrl == null -> {
+                logger.info("TYPETALK_API_URL environment property has not been set, cannot send message to TypeTalk.")
+            }
+            else -> try {
+                restTemplate.postForEntity(typetalkApiUrl!!, HttpEntity(mapOf("message" to message), httpHeaders), Void::class.java)
+            } catch (e: Exception) {
+                logger.info("Failed to send message to Typetalk. Error message: {}", e.message)
+            }
         }
     }
 
     companion object {
         const val TYPETALK_TOKEN_HEADER = "X-Typetalk-Token"
-        const val API_URL = "https://typetalk.com/api"
-
     }
 }

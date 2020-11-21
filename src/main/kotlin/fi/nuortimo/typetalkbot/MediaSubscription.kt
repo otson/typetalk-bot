@@ -11,6 +11,5 @@ data class MediaSubscription(
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Int? = null,
         val username: String,
-        val mediaId: Int,
-        val topicId: Int
+        val mediaId: Int
 )

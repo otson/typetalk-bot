@@ -1,5 +1,6 @@
 package fi.nuortimo.typetalkbot
 
+import fi.nuortimo.typetalkbot.dto.backlog.BacklogRequestDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.AccountDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.PostDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
@@ -76,7 +77,7 @@ class WebhookIT : IT {
     @DisplayName("Backlog webhook endpoint responds with OK")
     fun backLogWebhookEndpointRespondsWithOk() {
         val response = restTemplate.postForEntity("http://localhost:$port/webhook/backlog",
-                HttpEntity("backlogMessage"), String::class.java)
+                HttpEntity(BacklogRequestDTO()), String::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
     }
 
@@ -109,7 +110,7 @@ class WebhookIT : IT {
         val username = "user"
         val mediaId = 1
         val expectedMessage = "Subscription removed!"
-        mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId, topicId = 0))
+        mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId))
         val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!unsub $mediaId", account = AccountDTO(name = username)))
         val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
                 HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
@@ -122,7 +123,7 @@ class WebhookIT : IT {
     fun listSubsCommandRespondsWithSubscriptions() {
         val username = "user"
         val mediaId = 321
-        mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId, topicId = 0))
+        mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId))
         val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!listsubs", account = AccountDTO(name = username)))
         val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
                 HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)

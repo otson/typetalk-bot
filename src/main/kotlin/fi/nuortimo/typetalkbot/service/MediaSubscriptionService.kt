@@ -13,9 +13,9 @@ class MediaSubscriptionService {
     private lateinit var mediaSubscriptionRepository: MediaSubscriptionRepository
 
     @Transactional
-    fun addSubscription(username: String, mediaId: Int, topicId: Int): Boolean {
+    fun addSubscription(username: String, mediaId: Int): Boolean {
         return if (!mediaSubscriptionRepository.existsByUsernameAndMediaId(username, mediaId)) {
-            val sub = MediaSubscription(username = username, mediaId = mediaId, topicId = topicId)
+            val sub = MediaSubscription(username = username, mediaId = mediaId)
             mediaSubscriptionRepository.save(sub)
             true
         } else false

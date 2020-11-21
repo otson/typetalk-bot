@@ -33,24 +33,24 @@ class TypeTalkIT : IT {
     @Test
     @DisplayName("Sends comment")
     fun sendsComment() {
-        val expectedTopicId = 1
         val expectedMessage = "Hi"
+        typetalkService.typetalkApiUrl = "http://localhost"
+        typetalkService.typetalkToken = "token"
         mockServer.expect(ExpectedCount.once(),
-                requestTo(URI("${TypetalkService.API_URL}/v1/topics/$expectedTopicId")))
+                requestTo(URI("${typetalkService.typetalkApiUrl}")))
                 .andExpect(method(HttpMethod.POST))
                 .andExpect(content().json("{\"message\": $expectedMessage}"))
-        typetalkService.sendMessage(expectedTopicId, expectedMessage)
+        typetalkService.sendMessage(expectedMessage)
         mockServer.verify()
     }
 
     @Test
     @DisplayName("Does not send comment without API token")
     fun doesNotSendCommentWithoutApiToken() {
-        val expectedTopicId = 1
         typetalkService.typetalkToken = null
         mockServer.expect(ExpectedCount.never(),
-                requestTo(URI("${TypetalkService.API_URL}/v1/topics/$expectedTopicId")))
-        typetalkService.sendMessage(expectedTopicId, "message")
+                requestTo(URI("${typetalkService.typetalkApiUrl}")))
+        typetalkService.sendMessage("message")
         mockServer.verify()
         typetalkService.typetalkToken = "token"
     }
