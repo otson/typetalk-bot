@@ -41,3 +41,9 @@ tasks.withType<KotlinCompile> {
         jvmTarget = "11"
     }
 }
+
+tasks {
+    named<JavaExec>("bootRun") {
+        systemProperties(System.getProperties().toMap() as Map<String,Object>)
+    }
+}

@@ -1,7 +1,9 @@
 package fi.nuortimo.typetalkbot.service
 
+import fi.nuortimo.typetalkbot.dto.backlog.BacklogRequestDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
+import fi.nuortimo.typetalkbot.enums.BacklogEvent
 import fi.nuortimo.typetalkbot.enums.Command
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -12,6 +14,9 @@ class WebhookService {
     @Autowired
     private lateinit var aniListService: AniListService
 
+    @Autowired
+    private lateinit var backlogService: BacklogService
+
     fun processTypetalkMessage(message: TypetalkMessageDTO): TypetalkResponseDTO? {
         return when (Command.getCommand(message.post.message)) {
             Command.HELLO -> getHelloReply(message)
@@ -21,6 +26,12 @@ class WebhookService {
             Command.LISTSUBS -> getListSubsReply(message)
             Command.UNSUPPORTED -> getUnsupportedReply(message)
             else -> null
+        }
+    }
+
+    fun processBacklogMessage(message: BacklogRequestDTO) {
+        when (message.type) {
+            BacklogEvent.NEW_ISSUE.value -> backlogService.processIssueCreatedMessage(message)
         }
     }
 

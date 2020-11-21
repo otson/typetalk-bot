@@ -1,5 +1,6 @@
 package fi.nuortimo.typetalkbot.controller
 
+import fi.nuortimo.typetalkbot.dto.backlog.BacklogRequestDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
 import fi.nuortimo.typetalkbot.service.WebhookService
@@ -27,8 +28,9 @@ class WebhookController {
     }
 
     @PostMapping("/backlog")
-    fun receiveFromBacklog(@RequestBody message: String): ResponseEntity<TypetalkResponseDTO?> {
+    fun receiveFromBacklog(@RequestBody message: BacklogRequestDTO): ResponseEntity<Nothing> {
         logger.info("Received Backlog message: $message")
+        webhookService.processBacklogMessage(message)
         return ResponseEntity.ok().build()
     }
 }

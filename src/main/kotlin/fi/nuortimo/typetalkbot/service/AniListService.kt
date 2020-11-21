@@ -48,7 +48,7 @@ class AniListService {
         val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(subsMediaIdsToNotify)
         for (sub in subsToNotify) {
             val msg = "${sub.username}, ${idNameMap[sub.mediaId]} airs soon!"
-            typeTalkService.sendMessage(sub.topicId, msg)
+            typeTalkService.sendMessage(msg)
         }
     }
 
@@ -71,8 +71,7 @@ class AniListService {
         return try {
             val username = message.post.account.name
             val mediaId = message.post.message.drop(5).toInt()
-            val topicId = message.post.topicId
-            return if (mediaSubscriptionService.addSubscription(username, mediaId, topicId)) {
+            return if (mediaSubscriptionService.addSubscription(username, mediaId)) {
                 "Subscribed!"
             } else "Subscription already exists!"
         } catch (e: Exception) {

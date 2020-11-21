@@ -22,7 +22,7 @@ class MediaSubscriptionIT : IT {
     @Test
     @DisplayName("Saves mediaSubscription")
     fun saveMediaSubscription() {
-        mediaSubscriptionService.addSubscription("name", 1, 1)
+        mediaSubscriptionService.addSubscription("name", 1)
         assertThat(mediaSubscriptionRepository.count(), equalTo(1L))
     }
 
@@ -31,8 +31,8 @@ class MediaSubscriptionIT : IT {
     fun doesNotSaveDuplicateMediaSubscription() {
         val username = "name"
         val mediaId = 1
-        assertThat(mediaSubscriptionService.addSubscription(username, mediaId, 1), equalTo(true))
-        assertThat(mediaSubscriptionService.addSubscription(username, mediaId, 2), equalTo(false))
+        assertThat(mediaSubscriptionService.addSubscription(username, mediaId), equalTo(true))
+        assertThat(mediaSubscriptionService.addSubscription(username, mediaId), equalTo(false))
         assertThat(mediaSubscriptionRepository.count(), equalTo(1L))
     }
 }
