@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 
 @DisplayName("Command")
-class CommandUT {
+class CommandUT : UT {
 
     @Test
     @DisplayName("Unsupported command returns unsupported")

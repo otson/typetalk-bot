@@ -24,7 +24,7 @@ import java.net.URI
 
 @SpringBootTest
 @DisplayName("AnimeScheduleService")
-class AnimeScheduleServiceIT {
+class AnimeScheduleServiceIT : IT {
 
     @Autowired
     private lateinit var aniListService: AniListService

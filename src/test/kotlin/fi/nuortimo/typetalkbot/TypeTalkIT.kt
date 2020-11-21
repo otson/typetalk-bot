@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate
 import java.net.URI
 
 @SpringBootTest
-class TypeTalkIT {
+class TypeTalkIT : IT {
 
     @Autowired
     private lateinit var restTemplate: RestTemplate

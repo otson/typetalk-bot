@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DisplayName("Webhook")
-class WebhookIT {
+class WebhookIT : IT {
 
     @LocalServerPort
     private var port = 0
@@ -31,7 +31,7 @@ class WebhookIT {
     fun helloCommandReturnsHello() {
         val expectedName = "Name"
         val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
-                HttpEntity(TypetalkMessageDTO(PostDTO(message = "!hello", account =  AccountDTO(name = expectedName)))), TypetalkResponseDTO::class.java)
+                HttpEntity(TypetalkMessageDTO(PostDTO(message = "!hello", account = AccountDTO(name = expectedName)))), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         assertThat(response.body?.message, containsString("Hi $expectedName"))
     }
