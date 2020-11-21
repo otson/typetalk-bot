@@ -1,4 +1,6 @@
-package fi.nuortimo.typetalkbot.dto
+package fi.nuortimo.typetalkbot.dto.typetalk
+
+import fi.nuortimo.typetalkbot.dto.typetalk.AccountDTO
 
 data class PostDTO(
         var topicId : Int = 0,
