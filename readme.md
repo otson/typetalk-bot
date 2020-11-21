@@ -2,9 +2,10 @@
 
 Bot application for Typetalk written in Kotlin using Spring Boot.
 Listens to incoming webhook events from Typetalk and Backlog.
-User can interact with the bot with following commands by typing in the chat:
 
 ## Typetalk webhook
+
+User can interact with the bot with the following commands by typing in the chat:
 
 * **!hello**: Responds with a greeting.
 * **!today**: Responds with a list of anime that will air the next 24 hours.
@@ -16,14 +17,14 @@ User can interact with the bot with following commands by typing in the chat:
 
 * Notification is sent to Typetalk of created issues.
 
-## Running app
+## Run
 
 * (optional) `TYPETALK_TOKEN` and `TYPETALK_API_URL` environment variables should be set in order for the bot to be able
  to send Backlog event and notification messages.
     * Create a new Typetalk bot, copy its `Typetalk token` and `Get or post messages URL`.
 * Run `gradlew bootRun -DTYPETALK_TOKEN=token_here -DTYPETALK_API_URL=url_here`, or just `gradlew bootRun`.
 
-## Running tests
+## Tests
 
 * Run `gradlew test`.
 
@@ -33,6 +34,7 @@ When running the bot in localhost, you need to set up tunneling to localhost to 
 This can be done with **[Ngrok][1]**.
 
 ### Ngrok setup
+
 1. Download and save the application from the [Ngrok homepage][1].
 2. Run `ngrok http 8080` (or the port where the app is running in localhost).
 3. Copy the displayed HTTPS forwarding address (e.g. `https://4d1f250f574d.ngrok.io`). You can also go to 
