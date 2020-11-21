@@ -80,6 +80,18 @@ class AniListService {
         }
     }
 
+    fun removeSubscription(message: TypetalkMessageDTO): String {
+        return try {
+            val username = message.post.account.name
+            val mediaId = message.post.message.drop(7).toInt()
+            return if (mediaSubscriptionService.removeSubscription(username, mediaId)) {
+                "Subscription removed!"
+            } else "Subscription does not exist!"
+        } catch (e: Exception) {
+            "Invalid subscription value, should be numerical id of the media."
+        }
+    }
+
     private fun getUpcomingAnime(): AniListResponseDTO {
         val mediaIds = getUpcomingMediaIds(0, 24 * 60)
         return getAnimeByMediaIds(mediaIds)
