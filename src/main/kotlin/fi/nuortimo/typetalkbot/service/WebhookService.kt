@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot.service
 
-import fi.nuortimo.typetalkbot.dto.backlog.BacklogRequestDTO
+import fi.nuortimo.typetalkbot.dto.backlog.BacklogMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
 import fi.nuortimo.typetalkbot.enums.BacklogEvent
@@ -29,7 +29,7 @@ class WebhookService {
         }
     }
 
-    fun processBacklogMessage(message: BacklogRequestDTO) {
+    fun processBacklogMessage(message: BacklogMessageDTO) {
         when (message.type) {
             BacklogEvent.NEW_ISSUE.value -> backlogService.processIssueCreatedMessage(message)
         }

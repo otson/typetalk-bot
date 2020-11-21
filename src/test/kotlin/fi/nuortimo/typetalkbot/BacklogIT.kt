@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot
 
-import fi.nuortimo.typetalkbot.dto.backlog.BacklogRequestDTO
+import fi.nuortimo.typetalkbot.dto.backlog.BacklogMessageDTO
 import fi.nuortimo.typetalkbot.dto.backlog.Content
 import fi.nuortimo.typetalkbot.dto.backlog.CreatedUser
 import fi.nuortimo.typetalkbot.dto.backlog.Project
@@ -45,7 +45,7 @@ class BacklogIT : IT {
                 MockRestRequestMatchers.requestTo(URI("${typetalkService.typetalkApiUrl}")))
                 .andExpect(MockRestRequestMatchers.method(HttpMethod.POST))
                 .andExpect(MockRestRequestMatchers.content().json("{\"message\": \"$expectedMessage\"}"))
-        webhookService.processBacklogMessage(BacklogRequestDTO(Project("project"), 1, Content("issue"), CreatedUser("user")))
+        webhookService.processBacklogMessage(BacklogMessageDTO(Project("project"), 1, Content("issue"), CreatedUser("user")))
         typetalkService.typetalkApiUrl = null
         typetalkService.typetalkToken = null
         mockServer.verify()

@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot.dto.backlog
 
-data class BacklogRequestDTO(
+data class BacklogMessageDTO(
         var project: Project = Project(),
         var type : Int = 0,
         var content: Content = Content(),

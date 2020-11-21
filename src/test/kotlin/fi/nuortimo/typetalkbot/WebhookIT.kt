@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot
 
-import fi.nuortimo.typetalkbot.dto.backlog.BacklogRequestDTO
+import fi.nuortimo.typetalkbot.dto.backlog.BacklogMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.AccountDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.PostDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
@@ -73,7 +73,7 @@ class WebhookIT : IT {
     @DisplayName("Backlog webhook endpoint responds with OK")
     fun backLogWebhookEndpointRespondsWithOk() {
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/backlog",
-                HttpEntity(BacklogRequestDTO()), String::class.java)
+                HttpEntity(BacklogMessageDTO()), String::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
     }
 
