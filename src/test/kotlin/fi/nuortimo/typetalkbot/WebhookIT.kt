@@ -4,10 +4,16 @@ import fi.nuortimo.typetalkbot.dto.typetalk.AccountDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.PostDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
+import fi.nuortimo.typetalkbot.service.AniListService
+import fi.nuortimo.typetalkbot.service.WebhookService
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
@@ -25,6 +31,13 @@ class WebhookIT : IT {
 
     @Autowired
     private lateinit var restTemplate: RestTemplate
+
+    @Autowired
+    @InjectMocks
+    private lateinit var webhookService: WebhookService
+
+    @Mock
+    private lateinit var aniListService: AniListService
 
     @Test
     @DisplayName("Hello commands returns hello")
@@ -60,5 +73,30 @@ class WebhookIT : IT {
         val response = restTemplate.postForEntity("http://localhost:$port/webhook/backlog",
                 HttpEntity("backlogMessage"), String::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
+    }
+
+    @Test
+    @DisplayName("Today command returns upcoming anime")
+    fun todayCommandReturnsUpcomingAnime() {
+        val expectedMessage = "message"
+        MockitoAnnotations.openMocks(this)
+        `when`(aniListService.getUpcomingAnimeMessage()).thenReturn(expectedMessage)
+        val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
+                HttpEntity(TypetalkMessageDTO(PostDTO(message = "!today"))), TypetalkResponseDTO::class.java)
+        assertThat(response.statusCode, equalTo(HttpStatus.OK))
+        assertThat(response.body?.message, equalTo(expectedMessage))
+    }
+
+    @Test
+    @DisplayName("Sub command responds with subscribed")
+    fun subCommandRespondsWithSubscribed() {
+        val expectedMessage = "Subscribed message"
+        val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!sub 123"))
+        MockitoAnnotations.openMocks(this)
+        `when`(aniListService.addSubscription(typetalkMessage)).thenReturn(expectedMessage)
+        val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
+                HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
+        assertThat(response.statusCode, equalTo(HttpStatus.OK))
+        assertThat(response.body?.message, equalTo(expectedMessage))
     }
 }
