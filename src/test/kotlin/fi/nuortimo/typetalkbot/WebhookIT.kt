@@ -12,7 +12,6 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.InjectMocks
-import org.mockito.Mock
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 import org.mockito.Spy
@@ -116,5 +115,18 @@ class WebhookIT : IT {
                 HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         assertThat(response.body?.message, equalTo(expectedMessage))
+    }
+
+    @Test
+    @DisplayName("Listsubs command responds with subscriptions")
+    fun listSubsCommandRespondsWithSubscriptions() {
+        val username = "user"
+        val mediaId = 321
+        mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId, topicId = 0))
+        val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!listsubs", account = AccountDTO(name = username)))
+        val response = restTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
+                HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
+        assertThat(response.statusCode, equalTo(HttpStatus.OK))
+        assertThat(response.body?.message, containsString(mediaId.toString()))
     }
 }

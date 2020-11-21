@@ -5,7 +5,8 @@ enum class Command {
     TODAY,
     UNSUPPORTED,
     SUB,
-    UNSUB;
+    UNSUB,
+    LISTSUBS;
 
     companion object {
         const val PREFIX: Char = '!'

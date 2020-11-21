@@ -7,4 +7,5 @@ interface MediaSubscriptionRepository : JpaRepository<MediaSubscription, Int>{
     fun existsByUsernameAndMediaId(username : String, mediaId: Int) : Boolean
     fun findByMediaIdIn(subsMediaIds: Set<Int>): Set<MediaSubscription>
     fun deleteByUsernameAndMediaId(username : String, mediaId: Int)
+    fun findByUsername(username : String) : List<MediaSubscription>
 }

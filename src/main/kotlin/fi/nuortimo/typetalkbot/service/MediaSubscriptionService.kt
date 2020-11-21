@@ -28,4 +28,9 @@ class MediaSubscriptionService {
             true
         } else false
     }
+
+    @Transactional(readOnly = true)
+    fun findSubscriptions(username: String): List<MediaSubscription> {
+        return mediaSubscriptionRepository.findByUsername(username)
+    }
 }

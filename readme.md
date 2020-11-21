@@ -4,6 +4,8 @@ Bot application for Typetalk written in Kotlin using Spring Boot. Listens to inc
 * **!hello**: Responds with a greeting.
 * **!today**: Responds with a list of anime that will air the next 24 hours.
 * **!sub `anime_id`**: Subscribe to notifications when a new episode of the specified anime is about to air.
+* **!unsub `anime_id`**: Remove existing notification subscription.
+* **!listsubs**: Responds with list of anime ids of current own subscriptions.
 
 ## Running app
 
