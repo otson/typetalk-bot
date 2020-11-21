@@ -53,4 +53,12 @@ class WebhookIT {
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         assertThat(response.body, nullValue())
     }
+
+    @Test
+    @DisplayName("Backlog webhook endpoint responds with OK")
+    fun backLogWebhookEndpointRespondsWithOk() {
+        val response = restTemplate.postForEntity("http://localhost:$port/webhook/backlog",
+                HttpEntity("backlogMessage"), String::class.java)
+        assertThat(response.statusCode, equalTo(HttpStatus.OK))
+    }
 }

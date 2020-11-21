@@ -16,7 +16,7 @@ class TypetalkService {
     private val logger: Logger = LogManager.getLogger(TypetalkService::class.java)
 
     @Value("\${TYPETALK_TOKEN:#{null}}")
-    private var typetalkToken: String? = null
+    var typetalkToken: String? = null
 
     @Autowired
     private lateinit var restTemplate: RestTemplate
@@ -31,7 +31,7 @@ class TypetalkService {
         if (typetalkToken == null) {
             logger.info("TYPETALK_TOKEN has not been set, cannot send message to TypeTalk.")
         }
-        try {
+        else try {
             restTemplate.postForEntity("$API_URL/v1/topics/$topicId", HttpEntity(mapOf("message" to message), httpHeaders), Void::class.java)
         } catch (e: Exception) {
             logger.info("Failed to send message to Typetalk. Error message: {}", e.message)
