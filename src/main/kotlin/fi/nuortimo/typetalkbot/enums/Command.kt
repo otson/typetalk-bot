@@ -2,7 +2,9 @@ package fi.nuortimo.typetalkbot.enums
 
 enum class Command {
     HELLO,
-    UNSUPPORTED;
+    TODAY,
+    UNSUPPORTED,
+    SUB;
 
     companion object {
         const val PREFIX: Char = '!'
