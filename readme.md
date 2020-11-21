@@ -7,7 +7,9 @@ Bot application for Typetalk written in Kotlin using Spring Boot. Listens to inc
 
 ## Running app
 
-* Run `gradlew bootRun`.
+* (optional) `TYPETALK_TOKEN` environment variable should be set in order for the bot to be able to send notification messages.
+    * Create a new Typetalk bot, copy its `Typetalk token`.
+* Run `gradlew bootRun --args='--TYPETALK_TOKEN=token_here'`, or just `gradlew bootRun`.
 
 ## Running tests
 
