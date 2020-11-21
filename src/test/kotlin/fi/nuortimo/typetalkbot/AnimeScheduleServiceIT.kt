@@ -23,7 +23,7 @@ import java.net.URI
 
 
 @SpringBootTest
-@DisplayName("AnimeScheduleService")
+@DisplayName("AnimeSchedule")
 class AnimeScheduleServiceIT : IT {
 
     @Autowired

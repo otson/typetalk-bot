@@ -3,6 +3,7 @@ package fi.nuortimo.typetalkbot.service
 import fi.nuortimo.typetalkbot.dto.backlog.BacklogRequestDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
+import fi.nuortimo.typetalkbot.enums.BacklogEvent
 import fi.nuortimo.typetalkbot.enums.Command
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -29,8 +30,8 @@ class WebhookService {
     }
 
     fun processBacklogMessage(message: BacklogRequestDTO) {
-        when(message.type){
-            1 -> backlogService.processIssueCreatedMessage(message)
+        when (message.type) {
+            BacklogEvent.NEW_ISSUE.value -> backlogService.processIssueCreatedMessage(message)
         }
     }
 
