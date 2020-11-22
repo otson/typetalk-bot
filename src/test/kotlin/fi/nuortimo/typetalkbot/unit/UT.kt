@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot.UT
+package fi.nuortimo.typetalkbot.unit
 
 import org.springframework.test.context.ActiveProfiles
 

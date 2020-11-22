@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot.UT
+package fi.nuortimo.typetalkbot.unit
 
 import fi.nuortimo.typetalkbot.enums.Command.Companion.PREFIX
 import fi.nuortimo.typetalkbot.enums.Command.Companion.getCommand

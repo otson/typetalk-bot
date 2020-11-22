@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot.IT
+package fi.nuortimo.typetalkbot.integration
 
 import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
 import fi.nuortimo.typetalkbot.service.MediaSubscriptionService

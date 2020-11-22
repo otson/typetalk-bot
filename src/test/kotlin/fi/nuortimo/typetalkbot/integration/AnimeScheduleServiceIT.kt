@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot.IT
+package fi.nuortimo.typetalkbot.integration
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fi.nuortimo.typetalkbot.dto.anilist.*

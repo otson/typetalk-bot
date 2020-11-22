@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot.IT
+package fi.nuortimo.typetalkbot.integration
 
 import fi.nuortimo.typetalkbot.service.TypetalkService
 import org.junit.jupiter.api.BeforeEach

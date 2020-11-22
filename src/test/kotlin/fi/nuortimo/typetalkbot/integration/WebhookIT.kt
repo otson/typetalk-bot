@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot.IT
+package fi.nuortimo.typetalkbot.integration
 
 import fi.nuortimo.typetalkbot.dto.backlog.BacklogMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.Account
