@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot
+package fi.nuortimo.typetalkbot.IT
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import fi.nuortimo.typetalkbot.dto.anilist.*
@@ -41,8 +41,8 @@ class AnimeScheduleServiceIT : IT {
     }
 
     @Test
-    @DisplayName("Today command returns upcoming media")
-    fun todayCommandReturnsUpcomingMedia() {
+    @DisplayName("Today command returns upcoming anime")
+    fun todayCommandReturnsUpcomingAnime() {
         val expectedTitle = "title"
         val expectedTimeUntil = "1h 1m"
         val expectedEpisodeNumber = "Episode 1 "

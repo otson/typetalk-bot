@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot.service
 
-import fi.nuortimo.typetalkbot.MediaSubscription
+import fi.nuortimo.typetalkbot.entity.MediaSubscription
 import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service

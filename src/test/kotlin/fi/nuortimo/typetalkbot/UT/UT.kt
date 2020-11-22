@@ -1,6 +1,6 @@
-package fi.nuortimo.typetalkbot
+package fi.nuortimo.typetalkbot.UT
 
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
-interface IT
+interface UT

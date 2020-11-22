@@ -84,7 +84,7 @@ class AniListService {
                 "Subscribed!"
             } else "Subscription already exists!"
         } catch (e: Exception) {
-            "Invalid subscription value, should be numerical id of the media."
+            "Invalid sub id value, should be the numerical sub id of the anime. See !today for list of anime with their sub ids."
         }
     }
 

@@ -1,10 +1,11 @@
-package fi.nuortimo.typetalkbot
+package fi.nuortimo.typetalkbot.IT
 
 import fi.nuortimo.typetalkbot.dto.backlog.BacklogMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.Account
 import fi.nuortimo.typetalkbot.dto.typetalk.Post
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
+import fi.nuortimo.typetalkbot.entity.MediaSubscription
 import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert.assertThat

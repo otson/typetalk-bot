@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot
+package fi.nuortimo.typetalkbot.entity
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

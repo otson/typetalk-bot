@@ -1,4 +1,4 @@
-package fi.nuortimo.typetalkbot
+package fi.nuortimo.typetalkbot.IT
 
 import fi.nuortimo.typetalkbot.dto.typetalk.Post
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
