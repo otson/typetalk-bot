@@ -1,8 +1,8 @@
 package fi.nuortimo.typetalkbot
 
 import fi.nuortimo.typetalkbot.dto.backlog.BacklogMessageDTO
-import fi.nuortimo.typetalkbot.dto.typetalk.AccountDTO
-import fi.nuortimo.typetalkbot.dto.typetalk.PostDTO
+import fi.nuortimo.typetalkbot.dto.typetalk.Account
+import fi.nuortimo.typetalkbot.dto.typetalk.Post
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkResponseDTO
 import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
@@ -35,7 +35,7 @@ class WebhookIT : IT {
     fun helloCommandReturnsHello() {
         val expectedName = "Name"
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
-                HttpEntity(TypetalkMessageDTO(PostDTO(message = "!hello", account = AccountDTO(name = expectedName)))), TypetalkResponseDTO::class.java)
+                HttpEntity(TypetalkMessageDTO(Post(message = "!hello", account = Account(name = expectedName)))), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         assertThat(response.body?.message, containsString("Hi $expectedName"))
     }
@@ -44,7 +44,7 @@ class WebhookIT : IT {
     @DisplayName("Unsupported command returns unsupported")
     fun unsupportedCommandReturnsUnsupported() {
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
-                HttpEntity(TypetalkMessageDTO(PostDTO(message = "!123"))), TypetalkResponseDTO::class.java)
+                HttpEntity(TypetalkMessageDTO(Post(message = "!123"))), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         assertThat(response.body?.message, containsString("Unsupported"))
     }
@@ -53,7 +53,7 @@ class WebhookIT : IT {
     @DisplayName("Not command returns empty body")
     fun notCommandReturnsEmptyBody() {
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
-                HttpEntity(TypetalkMessageDTO(PostDTO(message = "Hello"))), String::class.java)
+                HttpEntity(TypetalkMessageDTO(Post(message = "Hello"))), String::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
         assertThat(response.body, nullValue())
     }
@@ -62,7 +62,7 @@ class WebhookIT : IT {
     @DisplayName("Sub command responds with subscribed")
     fun subCommandRespondsWithSubscribed() {
         val expectedMessage = "Subscribed!"
-        val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!sub 123"))
+        val typetalkMessage = TypetalkMessageDTO(Post(message = "!sub 123"))
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
                 HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
@@ -84,7 +84,7 @@ class WebhookIT : IT {
         val mediaId = 1
         val expectedMessage = "Subscription removed!"
         mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId))
-        val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!unsub $mediaId", account = AccountDTO(name = username)))
+        val typetalkMessage = TypetalkMessageDTO(Post(message = "!unsub $mediaId", account = Account(name = username)))
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
                 HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))
@@ -97,7 +97,7 @@ class WebhookIT : IT {
         val username = "user"
         val mediaId = 321
         mediaSubscriptionRepository.save(MediaSubscription(username = username, mediaId = mediaId))
-        val typetalkMessage = TypetalkMessageDTO(PostDTO(message = "!listsubs", account = AccountDTO(name = username)))
+        val typetalkMessage = TypetalkMessageDTO(Post(message = "!listsubs", account = Account(name = username)))
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
                 HttpEntity(typetalkMessage), TypetalkResponseDTO::class.java)
         assertThat(response.statusCode, equalTo(HttpStatus.OK))

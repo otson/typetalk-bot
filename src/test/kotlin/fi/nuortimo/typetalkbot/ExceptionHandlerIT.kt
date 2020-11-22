@@ -1,6 +1,6 @@
 package fi.nuortimo.typetalkbot
 
-import fi.nuortimo.typetalkbot.dto.typetalk.PostDTO
+import fi.nuortimo.typetalkbot.dto.typetalk.Post
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.service.AniListService
 import org.hamcrest.CoreMatchers.equalTo
@@ -45,7 +45,7 @@ class ExceptionHandlerIT : IT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("error!"))
         val response = testRestTemplate.postForEntity("http://localhost:$port/webhook/typetalk",
-                HttpEntity(TypetalkMessageDTO(PostDTO(message = "!today"))), String::class.java)
+                HttpEntity(TypetalkMessageDTO(Post(message = "!today"))), String::class.java)
 
         assertThat(response.statusCode, equalTo(HttpStatus.INTERNAL_SERVER_ERROR))
         assertThat(response.body, nullValue())

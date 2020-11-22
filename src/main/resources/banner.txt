@@ -4,4 +4,4 @@ ${Ansi.GREEN}| |_/ /  ___  | |_  ______ | |_   __ _  _ __
 ${Ansi.GREEN}| ___ \ / _ \ | __||______|| __| / _` || '_ \
 ${Ansi.GREEN}| |_/ /| (_) || |_         | |_ | (_| || | | |
 ${Ansi.GREEN}\____/  \___/  \__|         \__| \__,_||_| |_|
-${Ansi.BRIGHT_GREEN}Typetalk bot app, please see${Ansi.YELLOW} readme.md ${Ansi.BRIGHT_GREEN}for more information!
+${Ansi.BRIGHT_GREEN}Typetalk bot app, please see${Ansi.YELLOW} readme.md ${Ansi.BRIGHT_GREEN}for more information!${Ansi.DEFAULT}
