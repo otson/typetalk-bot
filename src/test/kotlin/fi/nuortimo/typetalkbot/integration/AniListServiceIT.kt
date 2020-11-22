@@ -23,8 +23,8 @@ import java.net.URI
 
 
 @SpringBootTest
-@DisplayName("AnimeSchedule")
-class AnimeScheduleServiceIT : IT {
+@DisplayName("AniList")
+class AniListServiceIT : IT {
 
     @Autowired
     private lateinit var aniListService: AniListService

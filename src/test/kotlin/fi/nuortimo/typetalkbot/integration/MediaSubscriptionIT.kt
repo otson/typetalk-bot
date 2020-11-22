@@ -35,4 +35,14 @@ class MediaSubscriptionIT : IT {
         assertThat(mediaSubscriptionService.addSubscription(username, mediaId), equalTo(false))
         assertThat(mediaSubscriptionRepository.count(), equalTo(1L))
     }
+
+    @Test
+    @DisplayName("Deletes mediaSubscription")
+    fun deletesMediaSubscription() {
+        val mediaId = 1
+        val username = "name"
+        mediaSubscriptionService.addSubscription(username, mediaId)
+        assertThat(mediaSubscriptionService.removeSubscription(username, mediaId), equalTo(true))
+        assertThat(mediaSubscriptionService.removeSubscription(username, mediaId), equalTo(false))
+    }
 }
