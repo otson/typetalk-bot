@@ -4,6 +4,8 @@ import fi.nuortimo.typetalkbot.dto.anilist.AniListRequestDTO
 import fi.nuortimo.typetalkbot.dto.anilist.AniListResponseDTO
 import fi.nuortimo.typetalkbot.dto.typetalk.TypetalkMessageDTO
 import fi.nuortimo.typetalkbot.repository.MediaSubscriptionRepository
+import org.apache.logging.log4j.LogManager
+import org.apache.logging.log4j.Logger
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
@@ -16,6 +18,8 @@ import kotlin.streams.toList
 
 @Service
 class AniListService {
+
+    private val logger: Logger = LogManager.getLogger(AniListService::class.java)
 
     @Autowired
     private lateinit var restTemplate: RestTemplate
@@ -38,17 +42,22 @@ class AniListService {
 
     @Scheduled(fixedRate = 1000 * 60)
     fun processSubscriptions() {
-        val subs = mediaSubscriptionRepository.findAll()
-        val mediaIdsToNotify = getUpcomingMediaIds(1, 2)
-        val subsMediaIdsToNotify = subs.map { it.mediaId }.toSet().filter { mediaIdsToNotify.contains(it) }.toSet()
-        val idNameMap = getAnimeByMediaIds(subsMediaIdsToNotify).data.page.media
-                .map {
-                    it.id to (it.title.english ?: it.title.native)
-                }.toMap()
-        val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(subsMediaIdsToNotify)
-        for (sub in subsToNotify) {
-            val msg = "${sub.username}, ${idNameMap[sub.mediaId]} airs soon!"
-            typeTalkService.sendMessage(msg)
+        try {
+            val subs = mediaSubscriptionRepository.findAll()
+            if (subs.isEmpty()) return
+            val mediaIdsToNotify = getUpcomingMediaIds(1, 2)
+            val subsMediaIdsToNotify = subs.map { it.mediaId }.toSet().filter { mediaIdsToNotify.contains(it) }.toSet()
+            val idNameMap = getAnimeByMediaIds(subsMediaIdsToNotify).data.page.media
+                    .map {
+                        it.id to (it.title.english ?: it.title.native)
+                    }.toMap()
+            val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(subsMediaIdsToNotify)
+            for (sub in subsToNotify) {
+                val msg = "${sub.username}, ${idNameMap[sub.mediaId]} airs soon!"
+                typeTalkService.sendMessage(msg)
+            }
+        } catch (e: Exception) {
+            logger.warn("Error in scheduled task processing subscriptions: ${e.message}")
         }
     }
 
