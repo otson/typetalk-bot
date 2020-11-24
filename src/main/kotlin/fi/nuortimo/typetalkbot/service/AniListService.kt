@@ -43,15 +43,13 @@ class AniListService {
     @Scheduled(fixedRate = 1000 * 60)
     fun processSubscriptions() {
         try {
-            val subs = mediaSubscriptionRepository.findAll()
-            if (subs.isEmpty()) return
-            val mediaIdsToNotify = getUpcomingMediaIds(1, 2)
-            val subsMediaIdsToNotify = subs.map { it.mediaId }.toSet().filter { mediaIdsToNotify.contains(it) }.toSet()
-            val idNameMap = getAnimeByMediaIds(subsMediaIdsToNotify).data.page.media
+            val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(getUpcomingMediaIds(1, 2))
+            if (subsToNotify.isEmpty()) return
+            val mediaIds = subsToNotify.map { it.mediaId }.toSet()
+            val idNameMap = getAnimeByMediaIds(mediaIds).data.page.media
                     .map {
                         it.id to (it.title.english ?: it.title.native)
                     }.toMap()
-            val subsToNotify = mediaSubscriptionRepository.findByMediaIdIn(subsMediaIdsToNotify)
             for (sub in subsToNotify) {
                 val msg = "${sub.username}, ${idNameMap[sub.mediaId]} airs soon!"
                 typeTalkService.sendMessage(msg)
